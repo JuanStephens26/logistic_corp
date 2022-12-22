@@ -1,0 +1,198 @@
+<?php 
+    if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
+    if (isset($_SESSION["usuario_valido"]))
+    { 
+        $id = "";
+        $no_order = "";
+        $client_id = "";
+        $country = "";
+        $city = "";
+        $description = "";
+        $status = "";
+        $descri_status = "";
+        $date_dispatched = "";
+        $lno_line = "";
+        $lprtnum = "";
+        $llotnum = "";
+        $lno_tempe = "";
+        $lqty = "";
+        $lqty_located = "";
+        $no_locc = "";
+        $located_flag = "";
+        $user_work = "";
+
+        require_once("../class/pedido.php");
+        require_once("../class/cliente.php");
+
+        $obj_clientes = new clientes();
+        $clientes = $obj_clientes->consultar_cliente_all();
+
+        if($_SERVER['REQUEST_METHOD']=='POST' || $_SERVER['REQUEST_METHOD']=='GET'){
+
+            if(isset($_REQUEST['indicador'])){
+                $indicador = $_REQUEST['indicador'];
+            }
+
+        if(isset($_REQUEST['no_order'])){
+            $id = $_REQUEST['no_order'];
+            if($indicador == "CU"){
+            $obj_pedidos = new pedidos();
+            $pedidos = $obj_pedidos->consultar_ordenes_id($id);
+            
+            if(isset($pedidos)){
+                foreach ($pedidos as $resultado){
+                    $id = $resultado["no_order"];
+                    $no_order = $resultado["no_order"];
+                    $client_id = $resultado["client_id"];
+                    $descri_status = $resultado["descri_status"];
+                    $status = $resultado["status"];
+                    $date_dispatched = $resultado["date_dispatched"];
+                    $description = $resultado["description"];
+                }
+            }
+        }
+        }
+    }
+$servidor_route = $_SERVER['DOCUMENT_ROOT']."/logistic_corp";
+    ?>
+    <?php include ($servidor_route."/template/header.php"); ?>
+    <?php include ($servidor_route."/template/nav.php"); 
+    
+    if ($_SESSION["client_flag"] == "S"){
+    ?>
+    <div class="table-responsive" style="height:80%; padding-top: 20px; padding-left: 20px; padding-right: 20px;">
+    <form class="row" name="form_order" method="post">
+    <input type="hidden" name="indicador" >
+        <div class="col-md-3">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" >No. Order</span>
+                <input type="text" class="form-control" name="no_order" value="<?php echo $no_order ?>" readonly>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" >Estado</span>
+                <input type="text" class="form-control" name="descri_status" value="<?php echo $descri_status ?>" readonly>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" >Descripción</span>
+                <input type="text" class="form-control" name="description" value="<?php echo $description ?>">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" >Fecha despacho</span>
+                <input type="date" class="form-control" id="date_dispatched" name="date_dispatched" value="<?php echo $date_dispatched; ?>">
+            </div>
+        </div>
+        <div class="col-md-4">
+        <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" >Cliente</span>
+            <select class="form-select" name="client_id">
+            <option value=""></option>
+                <?php if(isset($clientes)){ 
+                    foreach ($clientes as $resultado){
+                    $selected = $resultado["client_id"] == $client_id ? "selected" : "";
+                ?>
+                <option <?php echo $selected; ?> value="<?php echo $resultado["client_id"]; ?>"><?php echo $resultado["name"]; ?></option>
+                <?php } } ?>
+            </select>
+            </div>
+        </div>
+        <div class="col-md-12">
+                    </div>
+        <div class="col-md-2">
+              <br>
+              <a href="./create_order.php"><div class="btn btn-sm btn btn-secondary form-control">Cancelar</div></a>
+        </div>
+        <?php 
+        if ( $status != 'A' && $status != 'F'){
+        if($id != ""){
+        ?>    
+        <div class="col-md-2">
+              <br>
+              <div class="btn btn-sm btn-danger form-control" onclick="eliminar_receipt()">Eliminar</div>
+        </div>
+        <?php
+        }
+        ?>
+        <div class="col-md-2">
+              <br>
+              <div class="btn btn-sm btn-primary form-control" onclick="guardar_receipt()">Guardar</div>
+        </div>
+        <?php
+        }
+        ?>
+    </form>    
+    <?php if(isset($_REQUEST['no_order'])){ ?>
+        <a href="./create_order_lin_frm.php?no_order=<?php echo $no_order?>">
+            <div class="btn btn-success">Añadir producto</div>
+        </a>
+    <?php
+   require_once("../class/pedido.php");
+
+   $obj_pedidos = new pedidos();
+   $obj_pedidos->client_id = $_SESSION["client_id"];
+   $obj_pedidos->no_order = $no_order;
+   $pedidos = $obj_pedidos->consultar_ordenes_lineas();
+
+   $nfilas = 0;
+   if(isset($pedidos)){
+   $nfilas=count($pedidos);
+   }
+   
+    print ("<TABLE class='table table-striped table-hover'>\n");
+    print ("<caption>Lista de productos</caption>\n");
+    print ("<thead class='table-dark'>\n");
+    print ("<TR>\n");
+    print ("<TH scope='col'>No. Linea</th>\n");
+    print ("<TH scope='col'>Producto</th>\n");
+    print ("<TH scope='col'>Cantidad</th>\n");
+    print ("<TH scope='col'>Cliente</th>\n");
+    print ("</TR>\n");
+    print ("</thead>\n");
+    if ($nfilas > 0){
+    foreach ($pedidos as $resultado){
+        print ("<tbody>\n");
+        ?>
+        <TR style='cursor:pointer;'  onclick="abrir_modificacion_linea('<?php echo $resultado['no_line']?>','<?php echo $no_order?>');">
+        <?php
+        print ("<Th scope='row'>".$resultado['no_line']."</td>\n");
+        print ("<TD>".$resultado['descri_prt']."</td>\n");
+        print ("<TD>".$resultado['qty']."</td>\n");
+        print ("<TD>".$resultado['descri_client']."</td>\n");
+        print ("</TR>\n");
+        print ("</tbody>\n");
+    }
+  }
+    print("</table>\n");
+    if ($nfilas > 0){
+ ?>
+    </div>
+    <form name="form_hidden" hidden="true" method="post">
+      <input type="hidden" name="no_order">
+      <input type="hidden" name="client_id">
+      <input type="hidden" name="no_line">
+      <input type="hidden" name="indicador">
+    </form>
+    <?php
+}
+   else{
+    print ("No hay lineas");
+   }
+   ?> 
+    <?php } ?>
+</div>
+<script type="text/javascript" src="../js/create_order_frm.js"></script>
+    <?php 
+      }
+      include ($servidor_route."/template/footer.php");
+      } else { 
+        header ("Location: ../index.php");
+      }
+?>

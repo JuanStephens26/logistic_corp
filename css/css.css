@@ -1,0 +1,125 @@
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	margin:0px;
+	padding:0px;
+	font-family: 'Antic', sans-serif;
+}
+ 
+body {
+	background: rgba(0,0,0,.01);
+	color:#000;
+}
+
+header a:hover{
+	color: #e69f36;
+}
+header a{
+	color: #e69f36;
+    display:inline-block;
+}
+.div_header{
+	background-image: url("../image/header.jpg");
+	background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+	width: 100%;
+	height: 60px;
+	padding:5px 0;
+	overflow: hidden;
+	font-size: 2.5em;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    margin-bottom:2px ;
+  	box-shadow: 0 0px 5px #013D82 !important;
+	color: skyblue;
+	font-family: 'Asap', sans-serif;
+}
+
+footer{
+	width: 100%;
+	background:  #0c0c0c;
+	text-align: center;
+	color: #fff;
+	font-size: 1em;
+    box-shadow: 0 0px 5px #013D82 !important;
+}
+footer li,a{
+	text-decoration: none;
+    color: #fff;
+}
+footer  p a:hover{
+    color: #fff;
+   text-decoration: underline;
+}
+.centrar{
+	text-align: center;
+	color:black;
+}
+.all_width{
+	width: 100%;
+	height: 100%;
+}
+#navbarNav{
+	width: 80%;
+	text-align:center;
+}
+#navbarNav1{
+	margin:0px auto;
+}
+.div_padre{
+	position: relative;
+}
+.div_hijo{
+	margin-right: 5px;
+	height: 50px;
+	top: 50%;
+}
+.div_padreh{
+	text-align:center;
+}
+.div_hijoh{
+	margin:0px auto;
+}
+.nav-item {
+	height: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.nav-item:hover {
+	background-color: rgba(168, 170, 173, 0.5);
+}
+.navbar{
+	background-color: rgba(104, 120, 144, 0.5);
+}
+.content{
+	height: 500px;
+}
+.icon_image{
+	width: 60px;
+	height: 60px;
+}
+.row{
+	padding: 50px;
+	margin: 50px;
+}
+.list_descri{
+	display: flex;
+    align-items: center;
+	font-size: large;
+	font-weight: bold;
+	display : flex;
+    flex-direction : row;
+	padding-right: 5px;
+	border-radius: 15px;
+}
+.list_descri:hover{
+	background-color: rgba(197, 206, 220, 0.71);
+	cursor:pointer;
+}
+.col-4{
+	border-right: 1px solid;
+}
+.pointer:hover{
+	cursor:pointer;
+}
